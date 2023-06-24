@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      # - MARIADB_USER=myuser
+      # - MARIADB_ROOT_PASSWORD=mysecretpassword
+      # - MARIADB_DATABASE=my_db_products
+      # - MARIADB_PASSWORD=mysecretpassword
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=mysecretpassword
+      - MYSQL_DATABASE=my_db_products
+      - MYSQL_PASSWORD=mysecretpassword
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3000
+      DB_HOST: mariadb
+      DB_USER: root
+      DB_PORT: 3306
+      DB_PASSWORD: mysecretpassword
+      DB_NAME: my_db_products
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - mariadb
